@@ -20,7 +20,7 @@
             </DataTemplate>
             <DataTemplate x:Key="colorDataTemplate">
                 <WrapPanel Height="Auto">
-                    <Rectangle Margin="2" Width="100" Stretch="Fill" Fill="{Binding Brush}" Stroke="Black"/>
+                    <Rectangle Margin="2" Width="50" Stretch="Fill" Fill="{Binding Brush}" Stroke="Black"/>
                     <Label Content="{Binding Name}" Padding="2" Margin="2"/>
                 </WrapPanel>
             </DataTemplate>
