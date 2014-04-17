@@ -25,43 +25,23 @@ namespace CmdConfigure
         public MainWindow()
         {
             InitializeComponent();
+            LoadCurrentCmdSettings();
         }
 
-        private void FontsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LoadCurrentCmdSettings()
         {
-            if (ExampleTextBox == null)
-                return;
+            var settings = CmdRegistry.ReadCmdSettings();
+            var font = FontsListView.Items.Cast<FontFamily>().FirstOrDefault(x => x.ToString() == settings.FontName);
+            FontsListView.SelectedItem = font;
 
-            var selectedFont = e.AddedItems[0] as FontFamily;
-            ExampleTextBox.FontFamily = selectedFont;
+            var fontSize = SizeListView.Items.Cast<string>().FirstOrDefault(x => x == settings.FontSize.ToString());
+            SizeListView.SelectedItem = fontSize;
 
-        }
+            var foreColor = ForegroundColorComboBox.Items.Cast<ConsoleColorEntry>().FirstOrDefault(x => x.Color == settings.ForegroundColor);
+            ForegroundColorComboBox.SelectedItem = foreColor;
 
-        private void SizeListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ExampleTextBox == null)
-                return;
-
-            var selectedSize = e.AddedItems[0] as int?;
-            ExampleTextBox.FontSize = selectedSize.Value;
-        }
-
-        private void BackgroundColorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ExampleTextBox == null)
-                return;
-
-            var backColor = e.AddedItems[0] as ConsoleColorEntry;
-            ExampleTextBox.Background = backColor.Brush;
-        }
-
-        private void ForegroundColorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ExampleTextBox == null)
-                return;
-
-            var foreColor = e.AddedItems[0] as ConsoleColorEntry;
-            ExampleTextBox.Foreground = foreColor.Brush;
+            var backColor = BackgroundColorComboBox.Items.Cast<ConsoleColorEntry>().FirstOrDefault(x => x.Color == settings.BackgroundColor);
+            BackgroundColorComboBox.SelectedItem = backColor;
         }
     }
 }

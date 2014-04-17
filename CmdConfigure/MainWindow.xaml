@@ -6,7 +6,6 @@
         Title="Cmd Configure" Height="500" Width="1000">
     <Grid>
         <Grid.Resources>
-            <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
             <Style TargetType="GridViewColumnHeader">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
@@ -19,10 +18,10 @@
                 <Label Content="{Binding}" FontFamily="{Binding}" FontSize="18" Padding="2" Margin="0"/>
             </DataTemplate>
             <DataTemplate x:Key="colorDataTemplate">
-                <WrapPanel Height="Auto">
-                    <Rectangle Margin="2" Width="50" Stretch="Fill" Fill="{Binding Brush}" Stroke="Black"/>
-                    <Label Content="{Binding Name}" Padding="2" Margin="2"/>
-                </WrapPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Margin="2" Height="20" Width="20" Fill="{Binding Brush}" Stroke="Black"/>
+                    <Label Content="{Binding Name}" VerticalAlignment="Center"/>
+                </StackPanel>
             </DataTemplate>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
@@ -30,13 +29,13 @@
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="5*" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="60" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0">Select Font</Label>
         <Label Grid.Column="1" Grid.Row="0">Select Size</Label>
@@ -44,14 +43,14 @@
         <Label Grid.Column="2" Grid.Row="2">Select Background Color</Label>
         <Label Grid.Column="3" Grid.Row="2">Select Foreground Color</Label>
         <ListView x:Name="FontsListView"
-                  ItemsSource="{Binding Source={StaticResource familyCollection}}"
+                  ItemsSource="{x:Static c:CmdFonts.FontFamilies}"
                   Grid.Column="0" 
                   Grid.Row="1"
                   Grid.RowSpan="3"
                   Margin="10" 
-                  SelectionMode="Single" 
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  SelectionChanged="FontsListView_SelectionChanged">
+                  SelectionMode="Single"
+                  SelectedIndex="0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="2000" CellTemplate="{StaticResource fontDataTemplate}"/>
@@ -59,13 +58,13 @@
             </ListView.View>
         </ListView>
         <ListView x:Name="SizeListView" 
-                  ItemsSource="{x:Static c:Constants.FontSizes}"
+                  ItemsSource="{x:Static c:CmdFonts.FontSizes}"
                   Grid.Column="1" 
                   Grid.Row="1" 
                   Grid.RowSpan="3"
                   Margin="10"
                   SelectionMode="Single"
-                  SelectionChanged="SizeListView_SelectionChanged">
+                  SelectedIndex="4">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
@@ -75,12 +74,14 @@
         <RichTextBox Name="ExampleTextBox"
                      Grid.Column="2" 
                      Grid.Row="1"
-                     Grid.ColumnSpan="2"
+                     Grid.ColumnSpan="3"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch"
                      Margin="10"
-                     Background="Black"
-                     Foreground="White">
+                     Background="{Binding SelectedItem.Brush, ElementName=BackgroundColorComboBox}"
+                     Foreground="{Binding SelectedItem.Brush, ElementName=ForegroundColorComboBox}"
+                     FontSize="{Binding SelectedItem, ElementName=SizeListView}"
+                     FontFamily="{Binding SelectedItem, ElementName=FontsListView}">
             <FlowDocument>
                 <Paragraph Name="ExampleParagraph" >
                     <Run Text="{x:Static c:Constants.ExampleText}"/>
@@ -91,22 +92,21 @@
                   Grid.Row ="3"
                   Grid.Column="2"
                   Margin="10"
-                  HorizontalAlignment="Stretch" 
-                  VerticalAlignment="Stretch"
                   ItemsSource="{x:Static c:Constants.ColorList}"
                   ItemTemplate="{StaticResource colorDataTemplate}"
-                  SelectedIndex="0"
-                  SelectionChanged="BackgroundColorComboBox_SelectionChanged"/>
+                  SelectedIndex="0"/>
         <ComboBox Name="ForegroundColorComboBox"
                   Grid.Row ="3"
                   Grid.Column="3"
                   Margin="10"
-                  HorizontalAlignment="Stretch" 
-                  VerticalAlignment="Stretch"
                   ItemsSource="{x:Static c:Constants.ColorList}"
                   ItemTemplate="{StaticResource colorDataTemplate}"
-                  SelectedIndex="15"
-                  SelectionChanged="ForegroundColorComboBox_SelectionChanged"/>
-
+                  SelectedIndex="15"/>
+        <Button Content="Apply" 
+                Grid.Column="4"
+                Grid.Row="3"
+                Margin="10" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
